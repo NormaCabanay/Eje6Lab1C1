@@ -5,17 +5,30 @@
  */
 package eje6lab1c1;
 
+import eje6lab1c1.modelo.Producto;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author norma
  */
 public class ListaDePrecio extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form ListaDePrecio
-     */
-    public ListaDePrecio() {
+    
+    private DefaultTableModel modelo = new DefaultTableModel(); // creo tabla
+
+    public boolean isCellEditable(int f, int c) {// metodo para evitar modificar tabla
+        return false;
+    }
+    private Producto prodEncontrado = null;
+
+
+public ListaDePrecio() {
         initComponents();
+        String ids[] = {"Codigo", "Descripcion", "Precio", "Stock"};
+        modelo.setColumnIdentifiers(ids);
+        jTable1.setModel(modelo);// las 2 lineas anteriores y esta edito tabla a mi manera
     }
 
     /**
@@ -34,6 +47,7 @@ public class ListaDePrecio extends javax.swing.JInternalFrame {
         jTPrecAlto = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jbBuscar = new javax.swing.JButton();
 
         setClosable(true);
 
@@ -58,6 +72,13 @@ public class ListaDePrecio extends javax.swing.JInternalFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
+        jbBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/eje6lab1c1/Imagen/Image20230831192303.png"))); // NOI18N
+        jbBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbBuscarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -70,13 +91,15 @@ public class ListaDePrecio extends javax.swing.JInternalFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLPreBajo, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTFPrecBajo, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addGap(30, 30, 30)
+                        .addComponent(jTFPrecBajo, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jTPrecAlto, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(105, 105, 105))))
+                        .addGap(18, 18, 18)
+                        .addComponent(jbBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(53, 53, 53))))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -91,14 +114,50 @@ public class ListaDePrecio extends javax.swing.JInternalFrame {
                     .addComponent(jLPreBajo)
                     .addComponent(jLabel2)
                     .addComponent(jTFPrecBajo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTPrecAlto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTPrecAlto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 23, Short.MAX_VALUE))
+                .addGap(23, 23, 23))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jbBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbBuscarActionPerformed
+        // para buscar producto entre dos variables de precios
+        //creamos evento de button
+
+        prodEncontrado = null; 
+        try {
+            double precioDesde = Double.parseDouble(jTFPrecBajo.getText());
+            double precioHasta = Double.parseDouble(jTPrecAlto.getText());
+
+            for (Producto prod : MenuGeneral.listaProductos) {
+                double precio = prod.getPrecio();
+                if (precio >= precioDesde && precio <= precioHasta) {
+                    prodEncontrado = prod;
+                    break;
+                }
+            }
+            if (prodEncontrado == null) {
+                JOptionPane.showMessageDialog(this, "No se encuentra producto con esos valores");
+            } else {
+                modelo.addRow(new Object[]{// agrego - imprimo tabla en mi jIF
+                    prodEncontrado.getCodigo(),
+                    prodEncontrado.getDescripcion(),
+                    prodEncontrado.getPrecio(),
+                    prodEncontrado.getRubro(),
+                    prodEncontrado.getStock(),});
+            }
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Ingrese valores numéricos válidos para los precios.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    // declaramos try catch, parametros de precio base hasta tope
+    // creamos un for para que busque los productos y breck para pararlo cuando encuenre
+    // creamos un if para comparar sino encuentra activa catch
+    }//GEN-LAST:event_jbBuscarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -109,5 +168,8 @@ public class ListaDePrecio extends javax.swing.JInternalFrame {
     private javax.swing.JTextField jTFPrecBajo;
     private javax.swing.JTextField jTPrecAlto;
     private javax.swing.JTable jTable1;
+    private javax.swing.JButton jbBuscar;
     // End of variables declaration//GEN-END:variables
+
+
 }

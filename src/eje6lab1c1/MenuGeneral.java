@@ -116,7 +116,12 @@ public class MenuGeneral extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMIPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIPrecioActionPerformed
-        // TODO add your handling code here:
+         escritorio.removeAll();
+         escritorio.repaint();
+         ListaDePrecio lp=new ListaDePrecio();
+         lp.setVisible(true);
+         escritorio.add(lp);
+         escritorio.moveToFront(lp);
     }//GEN-LAST:event_jMIPrecioActionPerformed
 
     private void jMINombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMINombreActionPerformed
